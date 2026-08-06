@@ -1,0 +1,95 @@
+import heapq
+
+
+def dijkstra(graph, source):
+    """
+    Dijkstra's Algorithm using Min Heap
+    Time Complexity: O((V + E) log V)
+    Space Complexity: O(V)
+    """
+
+    n = len(graph)
+    distance = [float("inf")] * n
+    previous = [None] * n
+
+    distance[source] = 0
+
+    priority_queue = [(0, source)]
+    visited = set()
+
+    while priority_queue:
+
+        dist, u = heapq.heappop(priority_queue)
+
+        if u in visited:
+            continue
+
+        visited.add(u)
+
+        for v, weight in graph[u]:
+
+            if distance[u] + weight < distance[v]:
+                distance[v] = distance[u] + weight
+                previous[v] = u
+
+                heapq.heappush(priority_queue, (distance[v], v))
+
+    return distance, previous
+
+
+def reconstruct_path(previous, source, target):
+
+    path = []
+
+    while target is not None:
+        path.append(target)
+        target = previous[target]
+
+    path.reverse()
+
+    if path[0] == source:
+        return path
+
+    return []
+
+
+def print_paths(distance, previous, source):
+
+    print(f"\nShortest Paths from Vertex {source}\n")
+    print("{:<10}{:<12}{}".format("Vertex", "Distance", "Path"))
+    print("-" * 45)
+
+    for vertex in range(len(distance)):
+
+        path = reconstruct_path(previous, source, vertex)
+
+        if distance[vertex] == float("inf"):
+            dist = "INF"
+            path_str = "No Path"
+        else:
+            dist = distance[vertex]
+            path_str = " -> ".join(map(str, path))
+
+        print("{:<10}{:<12}{}".format(vertex, dist, path_str))
+
+
+def main():
+
+    graph = {
+        0: [(1, 4), (2, 1)],
+        1: [(3, 1)],
+        2: [(1, 2), (3, 5)],
+        3: [(4, 3)],
+        4: [(5, 2)],
+        5: []
+    }
+
+    source = 0
+
+    distance, previous = dijkstra(graph, source)
+
+    print_paths(distance, previous, source)
+
+
+if __name__ == "__main__":
+    main()

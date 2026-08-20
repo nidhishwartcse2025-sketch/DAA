@@ -1,0 +1,65 @@
+def first_fit(items, capacity):
+    bins = []
+
+    for item in items:
+        placed = False
+
+        for i in range(len(bins)):
+            if sum(bins[i]) + item <= capacity:
+                bins[i].append(item)
+                placed = True
+                break
+
+        if not placed:
+            bins.append([item])
+
+    return bins
+
+
+def first_fit_decreasing(items, capacity):
+    items = sorted(items, reverse=True)
+    return first_fit(items, capacity)
+
+
+def best_fit_decreasing(items, capacity):
+    items = sorted(items, reverse=True)
+    bins = []
+
+    for item in items:
+        best_bin = -1
+        minimum_space = float("inf")
+
+        for i in range(len(bins)):
+            remaining = capacity - sum(bins[i])
+
+            if remaining >= item and remaining - item < minimum_space:
+                minimum_space = remaining - item
+                best_bin = i
+
+        if best_bin == -1:
+            bins.append([item])
+        else:
+            bins[best_bin].append(item)
+
+    return bins
+
+
+items = [
+    0.5, 0.7, 0.3, 0.9, 0.2,
+    0.6, 0.8, 0.4, 0.1, 0.5
+]
+
+capacity = 1.0
+
+ff = first_fit(items, capacity)
+ffd = first_fit_decreasing(items, capacity)
+bfd = best_fit_decreasing(items, capacity)
+
+print("First Fit:", ff)
+print("Number of bins:", len(ff))
+
+print("\nFirst Fit Decreasing:", ffd)
+print("Number of bins:", len(ffd))
+
+print("\nBest Fit Decreasing:", bfd)
+print("Number of bins:", len(bfd))

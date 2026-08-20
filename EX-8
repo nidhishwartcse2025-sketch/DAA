@@ -1,0 +1,37 @@
+from itertools import permutations
+
+INF = float("inf")
+
+def tsp(cost):
+    n = len(cost)
+    cities = list(range(1, n))
+
+    minimum_cost = INF
+    best_path = None
+
+    for permutation in permutations(cities):
+        path = [0] + list(permutation) + [0]
+
+        current_cost = 0
+
+        for i in range(n):
+            current_cost += cost[path[i]][path[i + 1]]
+
+        if current_cost < minimum_cost:
+            minimum_cost = current_cost
+            best_path = path
+
+    return best_path, minimum_cost
+
+
+cost = [
+    [INF, 10, 15, 20],
+    [10, INF, 35, 25],
+    [15, 35, INF, 30],
+    [20, 25, 30, INF]
+]
+
+path, minimum_cost = tsp(cost)
+
+print("Optimal Path:", path)
+print("Minimum Cost:", minimum_cost)
